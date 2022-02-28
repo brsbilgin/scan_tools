@@ -603,6 +603,37 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
       tf::StampedTransform transform_msg (f2b_, time, fixed_frame_, base_frame_);
       tf_broadcaster_.sendTransform (transform_msg);
     }
+    ////odomoetry topic publisher
+    nav_msgs::Odometry::Ptr odom_msg;
+    odom_msg= boost::make_shared<nav_msgs::Odometry>();
+    odom_msg->header.stamp    = time;
+    odom_msg->child.frame_id = base_frame_;
+    odom_msg->pose.pose=pose_with_covariance_stamped_msg.pose.pose;
+
+    double previus_x = 0.0;
+    double previus_y = 0.0;
+    double previus_theta =0.0;
+    double tehta =tf::getYaw(f2b_.getRotation());
+
+    double delta_x=odom_msg.pose.pose.position.x-previus_x;
+    double delta_y=odom_msg.pose.pose.position.y-previus_y;
+    double delta_theta=tf::getYaw(f2b_.getRotation()) - previus_theta;
+
+    previus_x=odom_msg.pose.pose.position.x;
+    previus_y=odom_msg.pose.pose.position.y;
+    previus_theta=tf::getYaw(f2b_.getRotation()) ;
+
+    if(sin(theta)>0.49)
+      {
+       odom_msg->twist.twist.linear.x=delta_x/(dt*sin(theta); 
+      }
+    else
+      {
+      odom_msg->twist.twist.linear.x=delta_y/(dt*cos(theta); 
+      }
+      
+    odom_msg->twist.twist.linear.y=0;
+    odom_msg->twist.twist.angular.z=delta_theta/dt;
   }
   else
   {
