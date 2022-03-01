@@ -623,7 +623,7 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
 
       previus_x=odom_msg->pose.pose.position.x;
       previus_y=odom_msg->pose.pose.position.y;
-      previus_theta=tf::getYaw(f2b_.getRotation());
+      previus_theta=theta;
 
       if(sin(theta)>0.49)
         {
