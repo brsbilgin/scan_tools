@@ -158,6 +158,10 @@ class LaserScanMatcher
     sm_result output_;
     LDP prev_ldp_scan_;
 
+    double previous_x_;
+    double previous_y_;
+    double previous_theta_;
+
     // **** methods
 
     void initParams();

@@ -69,6 +69,11 @@ LaserScanMatcher::LaserScanMatcher(ros::NodeHandle nh, ros::NodeHandle nh_privat
   output_.dx_dy1_m = 0;
   output_.dx_dy2_m = 0;
 
+  // Initialize odom previous data
+  previous_x_ = 0.0;
+  previous_y_ = 0.0;
+  previous_theta_ =0.0;
+
   // **** publishers
 
   if (publish_pose_)
@@ -612,18 +617,16 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
       odom_msg->child_frame_id = base_frame_;
       odom_msg->pose.pose=pose_with_covariance_stamped_msg->pose.pose;
 
-      double previus_x = 0.0;
-      double previus_y = 0.0;
-      double previus_theta =0.0;
+
       double theta =tf::getYaw(f2b_.getRotation());
 
-      double delta_x=odom_msg->pose.pose.position.x-previus_x;
-      double delta_y=odom_msg->pose.pose.position.y-previus_y;
-      double delta_theta=tf::getYaw(f2b_.getRotation()) - previus_theta;
+      double delta_x=odom_msg->pose.pose.position.x-previous_x_;
+      double delta_y=odom_msg->pose.pose.position.y-previous_y_;
+      double delta_theta=tf::getYaw(f2b_.getRotation()) - previous_theta_;
 
-      previus_x=odom_msg->pose.pose.position.x;
-      previus_y=odom_msg->pose.pose.position.y;
-      previus_theta=tf::getYaw(f2b_.getRotation());
+      previous_x_=odom_msg->pose.pose.position.x;
+      previous_y_=odom_msg->pose.pose.position.y;
+      previous_theta_=tf::getYaw(f2b_.getRotation());
 
       if(sin(theta)>0.49)
         {
