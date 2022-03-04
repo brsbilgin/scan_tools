@@ -626,8 +626,7 @@ void LaserScanMatcher::processScan(LDP& curr_ldp_scan, const ros::Time& time)
 
       previous_x_=odom_msg->pose.pose.position.x;
       previous_y_=odom_msg->pose.pose.position.y;
-      previous_theta_=tf::getYaw(f2b_.getRotation());
-
+      previous_theta_=theta;
       if(sin(theta)>0.49)
         {
         odom_msg->twist.twist.linear.x=delta_x/(dt*sin(theta)); 
